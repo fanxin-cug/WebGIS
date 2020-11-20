@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>加载地质图</title>
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/ol-debug.js"></script>
+    <script src="js/zondyClient.js"></script>
+    <link rel="stylesheet" href="js/ol.css">
+    <script type="text/javascript">
+        var map;
+        function init() {
+            var layer1 = new Zondy.Map.TianDiTu({
+                ip: "127.0.0.1",
+                port: "6163",
+                layerType: Zondy.Enum.TiandituType.VEC
+            });
+
+            var layer2=new Zondy.Map.TianDiTu({
+                ip:"127.0.0.1",
+                port:"6163",
+                layerType:Zondy.Enum.TiandituType.CVA
+            });
+
+            map=new ol.Map({
+                target:'mapCon',
+                layers:[layer1,layer2],
+                view:new ol.View({
+                    zoom:4,
+                    center:[108,33],
+                    projection:'EPSG:4326'
+                })
+            });
+            
+            wmsLayer = new ol.layer.Tile({
+            opacity: 0.7, //图层透明度
+            	source: new ol.source.TileWMS({
+                	//WMS服务基地址
+                	url: 'http://219.142.81.85/arcgis/services/MAS12P51000011/MapServer/WMSServer',
+                	//图层等参数
+                	params: { 'LAYERS':'0', 'TILED': true }
+            	})
+        	});
+
+            map.addLayer(wmsLayer);
+            
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="mapCon" style="position: absolute;width: 100%;height:100%;"></div>
+</body>
+</html>
